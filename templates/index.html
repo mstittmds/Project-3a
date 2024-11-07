@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Data Visualizer</title>
+</head>
+<body>
+    <h1>Stock Data Visualizer</h1>
+    <form method="POST">
+        <label for="stock_symbol">Choose Symbol:</label>
+        <select name="stock_symbol" id="stock_symbol">
+            {% for symbol in stock_symbols %}
+                <option value="{{ symbol }}">{{ symbol }}</option>
+            {% endfor %}
+        </select>
+
+        <br>
+
+        <label for="chart_type">Choose Chart Type:</label>
+        <select name="chart_type" id="chart_type">
+            {% for chart in chart_types %}
+                <option value="{{ chart }}">{{ chart }}</option>
+            {% endfor %}
+        </select>
+
+        <br>
+
+        <label for="time_series_type">Choose Time Series:</label>
+        <select name="time_series_type" id="time_series_type">
+            {% for series in time_series_types %}
+                <option value="{{ series }}">{{ series }}</option>
+            {% endfor %}
+        </select>
+
+        <br>
+
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date" required>
+
+        <br>
+
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date" required>
+
+        <br>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if chart_file %}
+        <h2>Generated Chart:</h2>
+        <img src="{{ chart_file }}" alt="Stock Chart">
+    {% endif %}
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
