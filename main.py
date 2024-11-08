@@ -4,18 +4,19 @@ from data_fetcher import fetch_stock_data
 import pandas as pd
 import os
 from datetime import datetime
+import csv
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    stock_symbols = ["Select a Symbol", "AAPL", "MSFT", "GOOGL"]
+    stock_symbols = get_stock_symbols()
     chart_types = ["Select a Chart","Bar", "Line"]
     time_series_types = ["Select a Time Series","Intraday", "Daily", "Weekly", "Monthly"]
 
     if request.method == 'POST':
-        stock_symbol = request.form.get('stock_symbol')
+        stock_symbol = request.form.get('stock')
         chart_type = request.form.get('chart_type')
         time_series_type = request.form.get('time_series_type')
         start_date = request.form.get('start_date')
@@ -67,4 +68,18 @@ def index():
 
     return render_template('index.html', stock_symbols=stock_symbols,
                            chart_types=chart_types, time_series_types=time_series_types)
+
+def get_stock_symbols():
+    stock_symbols = []
+    with open('stocks.csv', 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            stock_symbols.append(row['Symbol'])
+    return stock_symbols
+
+@app.route('/create/', methods=['GET', 'POST'])
+def create():
+    stock_symbols = get_stock_symbols()
+    return render_template('index.html', stock_symbols=stock_symbols)
+
 app.run(port=5000)
